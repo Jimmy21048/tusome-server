@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router();
-const authenticate = require('../middleware/authMiddleware')
+// const authenticate = require('../middleware/authMiddleware').authRequest
 const bcrypt = require('bcrypt')
 const connection = require('../config')
 
 router.post('/login', (req, res) => {
     const username = req.body.username
-    const pwd = req.body.password
+    const pwd = req.body.pwd
 
     const query = "SELECT user_name, user_email, user_pwd FROM tusome_users WHERE user_name = ? OR user_email = ?"
     const values = [username, username]
@@ -27,7 +27,7 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
-    console.log(req.body)
+
     const username = req.body.username
     const email = req.body.email
     const pwd = req.body.pwd

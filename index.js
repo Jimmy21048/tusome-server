@@ -3,33 +3,36 @@ require('dotenv').config()
 const cors = require('cors')
 const dbConnection = require('./config')
 const session = require('express-session');
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 
+app.use(cors({
+    origin : [process.env.CORS_ORIGIN],
+    allowedHeaders : ["GET", "POST", "Content-Type"],
+    credentials: true
+}))
+app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(session({
     secret: 'my_secret_session',
     resave: true,
     saveUninitialized: false,
     name: 'tus_cook',
     cookie: {
-        maxAge: 3600000
+        maxAge: 3600000,
+        // sameSite: 'lax'
     }
 }))
 
-app.use((req, res, next) => {
-    res.locals.user = req.session.user
-    next()
-})
-
 app.use(express.json())
-
-app.use(cors({
-    origin : process.env.CORS_ORIGIN,
-    allowedHeaders : ["GET", "POST", "Content-Type"]
-}))
 
 const authRoute = require('./routes/auth')
 app.use('/auth', authRoute)
+
+const accountRoute = require('./routes/account');
+app.use('/account', accountRoute)
 
 dbConnection.connect((dbErr) => {
     if(dbErr) return console.log(dbErr);
