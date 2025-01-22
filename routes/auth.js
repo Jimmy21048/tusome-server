@@ -8,7 +8,7 @@ router.post('/login', (req, res) => {
     const username = req.body.username
     const pwd = req.body.pwd
 
-    const query = "SELECT user_name, user_email, user_pwd FROM tusome_users WHERE user_name = ? OR user_email = ?"
+    const query = "SELECT user_name, user_email, user_pwd FROM reader_users WHERE user_name = ? OR user_email = ?"
     const values = [username, username]
 
     connection.query(query, values, async (err, result) => {
@@ -36,7 +36,7 @@ router.post('/signup', (req, res) => {
         return res.json({error: "username and password must be 5+ characters"})
     }
 
-    const query = "SELECT user_name, user_email FROM tusome_users WHERE user_name = ? OR user_email = ?;"
+    const query = "SELECT user_name, user_email FROM reader_users WHERE user_name = ? OR user_email = ?;"
     const values = [username, email]
     connection.query(query, values, async (err, result) => {
         if(err) return console.log(err);
@@ -46,7 +46,7 @@ router.post('/signup', (req, res) => {
         } 
 
         const hashedPwd = await bcrypt.hash(pwd, 10)
-        const query1 = "INSERT INTO tusome_users (user_name, user_pwd, user_email) VALUES (?, ?, ?);"
+        const query1 = "INSERT INTO reader_users (user_name, user_pwd, user_email) VALUES (?, ?, ?);"
         const values1 = [username, hashedPwd, email]
         connection.query(query1, values1, (err) => {
             if(err) return console.log(err);
